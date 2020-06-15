@@ -1,0 +1,59 @@
+<html>
+<body>
+<head>	
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-file-upload/9.12.5/js/jquery.fileupload.js"></script>
+<script src="//cdn.bootcss.com/blueimp-file-upload/9.12.5/js/jquery.fileupload-process.js"></script>
+<script>
+	$(document).ready(function(){
+		
+		 $('input[name="file"]').fileupload({
+
+		       url: 'processOCR',
+		       Type: "POST",
+		       autoUpload: true,
+		       maxFileSize: 99 * 1024 * 1024, 
+
+		       messages: {
+		       	maxFileSize: 'File exceeds maximum allowed size of 99MB',
+		       },
+		       
+		       processfail: function (e, data) {
+		           var currentFile = data.files[data.index];
+		           if (data.files.error && currentFile.error) {
+		               // there was an error, do something about it
+		               console.log(currentFile.error);
+		           }
+		       },
+		       
+		       done: function(e, data) {
+		    	   console.log("data from server:" + data.result);
+		    	   $("#uploadImg").attr("src",data.result[0]);
+		          $("#result").html(data.result[1]);
+		       },
+		       fail: function(e, error) {
+		    	   console.log(error);
+		       },
+
+		     })
+		
+	});
+
+</script>
+</head>
+<h1>Upload a file for OCR:</h1>
+
+<!-- <form method="POST" action="/upload" enctype="multipart/form-data"> -->
+    <input type="file" name="file" accept="image/*" />
+    <br/>
+    <br/>
+<!--</form> -->
+    <br>
+    Extracted Cotent: <br>
+    <h2><span id="result" ></span></h2>
+    <br>
+    from uploaded image:<br>
+    <img id="uploadImg" />
+</body>
+</html>
